@@ -10,7 +10,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,15 +19,12 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class PlaylistListActivity extends AppCompatActivity {
+    public static final String PLAYLIST_INDEX = "playlistIndex";
 
-    private static final String PLAYLIST_NAME = "playlist_name";
-    private static final String PLAYLIST_SONGS = "playlist_songs";
-
-    List<Playlist> playlistList = new ArrayList<>();
+    List<Playlist> playlistList = PlaylistList.getInstance().getPlaylistList();
 
     private RecyclerView recyclerView;
     private PlaylistAdapter adapter;
@@ -87,8 +83,8 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         playlistList.add(new Playlist("numero uno"));
-        playlistList.add(new Playlist("numero duo"));
-        playlistList.add(new Playlist("numero doso"));
+        playlistList.add(new Playlist("numero dos"));
+        playlistList.add(new Playlist("numero tres"));
 
 
         if(adapter == null) {
@@ -98,6 +94,12 @@ public class MainActivity extends AppCompatActivity {
             adapter.notifyDataSetChanged();
         }
 
+    }
+
+    @Override
+    protected void onResume() {
+        this.adapter.notifyDataSetChanged();
+        super.onResume();
     }
 
     private class PlaylistHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -127,9 +129,8 @@ public class MainActivity extends AppCompatActivity {
         public void onClick(View view) {
             Class activity;
             activity = PlaylistActivity.class;
-            Intent intent = new Intent(MainActivity.this, activity);
-            intent.putExtra(PLAYLIST_NAME, playlist.getName());
-            intent.putExtra(PLAYLIST_SONGS, playlist.getSongTitles());
+            Intent intent = new Intent(PlaylistListActivity.this, activity);
+            intent.putExtra(PLAYLIST_INDEX, getAdapterPosition());
             startActivity(intent);
         }
     }
