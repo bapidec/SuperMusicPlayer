@@ -53,7 +53,6 @@ public class PlaylistActivity extends AppCompatActivity implements ShakeDetector
     private RecyclerView recyclerView;
     private PlaylistActivity.SongAdapter adapter;
     private boolean isPlaying = false;
-    private boolean playerPrepared = false;
 
     SensorManager sensorManager;
     ShakeDetector shakeDetector;
@@ -138,7 +137,6 @@ public class PlaylistActivity extends AppCompatActivity implements ShakeDetector
 
         this.songsList = PlaylistList.getInstance().getPlaylistList().get(playlistIndex).getSongs();
 
-        musicPlayer = new MediaPlayer();
         this.playPauseButton = findViewById(R.id.play_pause_button);
         this.nextButton = findViewById(R.id.next_button);
         this.prevButton = findViewById(R.id.prev_button);
@@ -179,7 +177,6 @@ public class PlaylistActivity extends AppCompatActivity implements ShakeDetector
         } else {
             adapter.notifyDataSetChanged();
         }
-
 
 
 
@@ -232,16 +229,7 @@ public class PlaylistActivity extends AppCompatActivity implements ShakeDetector
     private void play() {
         if(musicPlayer == null)
             return;
-//        if(!playerPrepared) {
-//            try {
-//                musicPlayer.prepare();
-//                musicPlayer.start();
-//            } catch (IOException e) {
-//                throw new RuntimeException(e);
-//            }
-//        }
         musicPlayer.start();
-
         isPlaying = true;
         playPauseButton.setImageResource(R.drawable.ic_pause);
         playPauseButton.invalidate();
@@ -311,15 +299,22 @@ public class PlaylistActivity extends AppCompatActivity implements ShakeDetector
     }
 
 
+    /*@Override
+    protected void onStop() {
+        super.onStop();
+        if(musicPlayer != null) {
+            musicPlayer.release();
+            musicPlayer = null;
+        }
+    }*/
+
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         super.onDestroy();
-        musicPlayer= MediaPlayer.create(this,songsList.get(currentSong).getUri());
-        if(isPlaying)
-        {
+        if (musicPlayer != null) {
             musicPlayer.stop();
             musicPlayer.release();
+            musicPlayer = null;
         }
-
     }
 }

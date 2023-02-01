@@ -43,6 +43,7 @@ public class PlaylistListActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 String new_name = input.getText().toString();
                 playlistList.add(new Playlist(new_name));
+                adapter.notifyDataSetChanged();
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -81,10 +82,6 @@ public class PlaylistListActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.playlists_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        playlistList.add(new Playlist("numero uno"));
-        playlistList.add(new Playlist("numero dos"));
-        playlistList.add(new Playlist("numero tres"));
 
 
         if(adapter == null) {
